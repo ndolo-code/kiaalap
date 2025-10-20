@@ -33,46 +33,83 @@ npm run clean
 ## Architecture
 
 ### Core Technologies
-- **Framework**: Bootstrap 5.3.8 (100% jQuery-free)
-- **Build Tool**: Vite 7.1.7 with Handlebars templating
+
+- **Framework**: Bootstrap 5.3.8 (100% jQuery-free, except Simple-DataTables)
+- **Build Tool**: Vite 7.1.7 with vite-plugin-handlebars 2.0
 - **Charts**: Chart.js 4.5.0 (replaced legacy Morris.js/C3/D3)
-- **Data Tables**: Simple-DataTables 9.x (vanilla JS, replaced jQuery DataTables)
-- **Icons**: Bootstrap Icons 1.13.1 (replaced FontAwesome CDN)
-- **CSS**: Sass preprocessor with PostCSS
+- **Data Tables**: Simple-DataTables 10.0 (vanilla JS, replaced jQuery DataTables)
+- **Icons**: Bootstrap Icons 1.13.1 (loaded from node_modules, no CDN)
+- **CSS**: Sass preprocessor with PostCSS (autoprefixer, cssnano)
 
 ### File Structure
 ```
 kiaalap/
 ├── src/
-│   ├── css/              # Custom stylesheets
-│   ├── js/               # JavaScript modules
-│   ├── partials/         # Handlebars partials (head, sidebar, header, footer, scripts)
-│   ├── helpers/          # Handlebars helpers for templating
+│   ├── css/              # Custom stylesheets (dashboard.css, charts-layout.css)
+│   ├── js/               # JavaScript modules (dashboard.js, charts-responsive.js, etc.)
+│   ├── partials/         # Handlebars partials (*.hbs)
+│   ├── helpers/          # Handlebars helpers (handlebars-helpers.js)
 │   └── scss/             # Sass source files
-├── node_modules/         # NPM packages (all assets load from here)
+├── node_modules/         # NPM packages (all assets load locally from here)
 ├── *.html               # 65 HTML pages using {{> partials}}
-├── vite.config.js       # Vite configuration with page contexts
+├── vite.config.js       # Vite + Handlebars configuration
 └── package.json         # Dependencies and scripts
 ```
 
 ### Handlebars Template System
 
-All HTML pages use consistent Handlebars partials:
-- `{{> head}}` - Meta tags, CSS imports from node_modules
-- `{{> sidebar}}` - Navigation sidebar with active state management
-- `{{> header}}` - Top header with user menu
-- `{{> footer}}` - Footer content
-- `{{> scripts}}` - JavaScript imports from node_modules
+**Partials Structure** (`src/partials/*.hbs`):
 
-Page-specific context is managed in `vite.config.js` through the `getPageContext()` function, which handles:
-- Navigation active states
-- Page titles and breadcrumbs
-- Additional CSS/JS requirements per page
+- `{{> head}}` - Meta tags, title, CSS imports from node_modules
+- `{{> sidebar}}` - Navigation sidebar with collapsible submenus
+- `{{> header}}` - Top header with search, notifications, user dropdown
+- `{{> footer}}` - Footer with current year and copyright
+- `{{> scripts}}` - Bootstrap and core JavaScript imports from node_modules
+
+**Context Management** (`vite.config.js`):
+
+The `getPageContext(filename)` function provides dynamic context to each page:
+
+- **Navigation States**: Sets active menu and expanded submenu based on filename patterns
+- **Page Configuration**: Provides title, pageTitle, pageDescription, breadcrumb array
+- **Additional Resources**: Specifies extra CSS/JS files needed (e.g., charts pages load Chart.js)
+- **Base Context**: Includes currentYear, meta tags, user object with messages/notifications
+
+**Available Handlebars Helpers** (`src/helpers/handlebars-helpers.js`):
+
+- `eq` - Equality comparison for conditional rendering (e.g., `{{#if (eq page 'index')}}`)
+- `isActive` - Check if current page matches target
+- `formatDate` - Date formatting (short/long)
+- `truncate` - Text truncation with suffix
+- `conditionalClass` - Dynamic CSS classes
+- Math: `add`, `subtract`, `multiply`
+- Array: `length`, `first`, `last`
+- String: `lowercase`, `uppercase`, `startsWith`, `endsWith`, `contains`
+
+### JavaScript Architecture
+
+**Core JavaScript** (`src/js/`):
+
+- `dashboard.js` - Main dashboard functionality: sidebar toggle, search, responsive behavior, Bootstrap component initialization
+- `charts-responsive.js` - Responsive chart handling for Chart.js across dashboard pages
+- `dashboard-modules.js` - Additional dashboard-specific modules
+- `layout.js` - Layout management and utilities
+- `main.js` - Global entry point
+
+**Key JavaScript Patterns**:
+
+- **DOMContentLoaded**: All scripts wait for DOM ready before initializing
+- **localStorage**: Sidebar collapsed state persists across sessions (desktop only)
+- **Responsive Handling**: Different behaviors for mobile (≤768px) vs desktop
+  - Mobile: Sidebar opens as overlay with backdrop
+  - Desktop: Sidebar collapses/expands in place
+- **Bootstrap Components**: Tooltips, popovers, collapses initialized via Bootstrap 5 API
+- **Navigation**: Active states managed by comparing `window.location.pathname` with link hrefs
 
 ### Key Modernization Changes
 
 1. **Bootstrap 5 Migration**: All pages converted from Bootstrap 4 to Bootstrap 5
-2. **jQuery Removal**: 100% jQuery-free! Vanilla JavaScript everywhere
+2. **jQuery Removal**: 100% jQuery-free! Vanilla JavaScript everywhere (except Simple-DataTables dependency)
 3. **Local Dependencies**: All CDN references replaced with node_modules imports
 4. **Consistent Grid System**: Custom dashboard-grid classes with responsive breakpoints
 5. **Year Updates**: All dates updated to 2025/current year
@@ -127,11 +164,39 @@ Navigation states are automatically set based on filename patterns in `vite.conf
 ## Common Patterns
 
 ### Adding a New Page
-1. Create the HTML file using Handlebars partials structure
-2. Add page context in `vite.config.js` if needed (title, breadcrumbs, navigation state)
-3. Include in build.rollupOptions.input if it needs separate bundling
+
+**Step 1: Create HTML file** in root directory using standard Handlebars template structure:
+
+```html
+{{> head}}
+{{> sidebar}}
+
+<div class="main-wrapper" id="mainWrapper">
+    {{> header}}
+
+    <main class="dashboard-content" id="main-content">
+        <div class="container-fluid">
+            <!-- Your page content here -->
+        </div>
+    </main>
+
+    {{> footer}}
+</div>
+
+{{> scripts}}
+```
+
+**Step 2: Add page context** in `vite.config.js` inside `getPageContext()`:
+
+- Update navigation state logic (lines 23-50) to set active menu items
+- Add page-specific config in `pageConfigs` object (lines 53-267) for custom title, breadcrumbs, additionalCSS/JS
+
+**Step 3: Add to build** (if needed): Include in `build.rollupOptions.input` array in `vite.config.js` (line 368)
+
+**Step 4: Update sidebar** (if needed): Add link to `src/partials/sidebar.hbs` in appropriate menu section
 
 ### Dashboard Card Spacing
+
 ```css
 .dashboard-card {
     margin-bottom: 24px;
@@ -139,8 +204,22 @@ Navigation states are automatically set based on filename patterns in `vite.conf
 ```
 
 ### Grid System
+
 ```html
 <div class="dashboard-grid grid-cols-2 gap-4">
     <!-- Responsive grid that becomes single column on mobile -->
 </div>
+
+<div class="dashboard-grid grid-cols-4">
+    <!-- 4 columns on desktop, 1 on mobile -->
+</div>
+```
+
+### Chart Pages
+
+Pages with Chart.js need these in their `vite.config.js` page config:
+
+```javascript
+additionalCSS: ['src/css/charts-layout.css'],
+additionalJS: ['node_modules/chart.js/dist/chart.umd.js', 'src/js/charts-responsive.js']
 ```

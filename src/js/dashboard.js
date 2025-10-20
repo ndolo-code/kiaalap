@@ -22,14 +22,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Sidebar toggle
   elements.sidebarToggle?.addEventListener('click', function () {
+    console.log('Sidebar toggle clicked, window width:', window.innerWidth);
     if (window.innerWidth <= 768) {
       // Mobile: show sidebar with overlay
       elements.sidebar.classList.add('active');
       elements.sidebarOverlay.classList.add('active');
+      console.log('Mobile mode: added active class');
     } else {
       // Desktop: collapse sidebar
       elements.sidebar.classList.toggle('collapsed');
       elements.mainWrapper.classList.toggle('full-width');
+      console.log('Desktop mode: toggled collapsed/full-width');
+      console.log('Sidebar classes:', elements.sidebar.className);
+      console.log('Main wrapper classes:', elements.mainWrapper.className);
 
       // Save state to localStorage
       const isCollapsed = elements.sidebar.classList.contains('collapsed');
