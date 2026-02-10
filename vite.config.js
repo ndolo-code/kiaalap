@@ -393,6 +393,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['jquery', 'bootstrap', '@popperjs/core']
+    include: ['bootstrap', '@popperjs/core']
   }
 });

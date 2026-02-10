@@ -3,15 +3,12 @@ import '../scss/main.scss';
 
 // Import Bootstrap and dependencies
 import * as bootstrap from 'bootstrap';
-import $ from 'jquery';
 
 // Import layout functionality
 import layout from './layout';
 import './dashboard.js';
 import './charts.js';
 
-// Make jQuery globally available for legacy plugins
-window.$ = window.jQuery = $;
 window.layout = layout;
 
 // Import modern libraries
@@ -22,9 +19,6 @@ import dayjs from 'dayjs';
 import Swiper from 'swiper';
 import SimpleBar from 'simplebar';
 import TomSelect from 'tom-select';
-
-// Import MetisMenu for sidebar
-import MetisMenu from 'metismenu';
 
 // Make libraries globally available
 window.bootstrap = bootstrap;
@@ -54,12 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
   popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl);
   });
-
-  // Initialize MetisMenu for sidebar
-  const sideMenu = document.querySelector('#side-menu');
-  if (sideMenu) {
-    new MetisMenu('#side-menu');
-  }
 
   // Initialize SimpleBar for custom scrollbars
   const scrollElements = document.querySelectorAll('[data-simplebar]');

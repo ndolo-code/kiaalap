@@ -8,6 +8,83 @@ Kiaalap has undergone a complete modernization from a legacy Bootstrap 3/4 templ
 
 ---
 
+## [2.3.0] - 2026-02-10 (Dependency Updates & Fixes)
+
+### 📦 Package Updates
+
+All dependencies updated to their latest versions.
+
+#### Dependencies Updated
+
+| Package | Previous | Updated |
+|---------|----------|---------|
+| @fortawesome/fontawesome-free | 7.0.1 | 7.2.0 |
+| chart.js | 4.5.0 | 4.5.1 |
+| countup.js | 2.8.0 | 2.9.0 |
+| dayjs | 1.11.10 | 1.11.19 |
+| filepond | 4.30.6 | 4.32.11 |
+| fullcalendar | 6.1.11 | 6.1.20 |
+| metismenu | 3.0.6 | 3.1.0 |
+| sass | 1.92.1 | 1.97.3 |
+| simple-datatables | 10.0.0 | 10.2.0 |
+| simplebar | 6.2.5 | 6.3.3 |
+| swiper | 12.0.2 | 12.1.0 |
+| tom-select | 2.3.1 | 2.4.6 |
+
+#### Dev Dependencies Updated
+
+| Package | Previous | Updated |
+|---------|----------|---------|
+| autoprefixer | 10.4.21 | 10.4.24 |
+| cssnano | 7.1.1 | 7.1.2 |
+| eslint | 9.35.0 | **10.0.0** (major) |
+| glob | 13.0.0 | 13.0.2 |
+| html-validate | 10.0.0 | 10.7.0 |
+| prettier | 3.6.2 | 3.8.1 |
+| stylelint | 16.24.0 | **17.2.0** (major) |
+| stylelint-config-standard-scss | 16.0.0 | **17.0.0** (major) |
+| terser | 5.44.0 | 5.46.0 |
+| vite | 7.1.7 | 7.3.1 |
+
+#### New Dev Dependencies
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| @eslint/js | 10.0.1 | Required for ESLint v10 flat config |
+| globals | 17.3.0 | Browser globals for ESLint v10 flat config |
+
+### 🔧 ESLint v10 Migration
+
+- **Migrated from legacy `.eslintrc.js` to flat config `eslint.config.js`**
+- ESLint v10 dropped support for the legacy config format
+- Added `@eslint/js` and `globals` packages for the new flat config
+- Removed old `.eslintrc.js` file
+
+### 🖼️ Screenshot Fix
+
+- **Fixed broken README screenshot**: The external Colorlib-hosted image returned a 404
+- Replaced with a locally hosted screenshot at `public/images/kiaalap-dashboard-preview.jpg`
+- Screenshot captured from the live dashboard at 1400x900 resolution
+
+### 🔧 Technical Notes
+
+- **CropperJS**: Kept at v1.6.2 (v2.x uses a completely different web components API)
+- **Quill**: Kept at v2.0.3 (known XSS vulnerability in HTML export, low severity - fix requires downgrade)
+- **Build System**: Verified all builds complete successfully with updated dependencies
+
+### 🐛 Bug Fixes
+
+- Fixed README dashboard preview image that was blocked/404 from external Colorlib URL
+
+### 🔄 Migration Notes
+
+For users upgrading from v2.2.0:
+1. Run `npm install` to update all dependencies
+2. If using custom ESLint config, migrate from `.eslintrc.js` to `eslint.config.js` (flat config format)
+3. No other breaking changes - all existing code works as-is
+
+---
+
 ## [2.2.0] - 2025-11-24 (Dependency Updates)
 
 ### 📦 Package Updates
