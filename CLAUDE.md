@@ -63,10 +63,9 @@ Similarly, chart initialization is duplicated:
 - `src/js/charts.js` — Charts + counters + progress bar animations (loaded via `main.js`)
 - `src/js/charts-responsive.js` — Same charts + counters (loaded per-page via `additionalJS` in vite config)
 
-### Two SCSS Entry Points
+### SCSS Entry Point
 
 - **`src/scss/main.scss`** — Loaded by `head.hbs`. Imports Bootstrap, Bootstrap Icons, Font Awesome. Minimal custom styles.
-- **`src/scss/app.scss`** — More comprehensive. Imports Bootstrap, Bootstrap Icons, variables, component partials (sidebar, header, buttons, dropdowns), utilities. Not currently loaded by any partial.
 
 ### Handlebars Template System
 
@@ -134,12 +133,7 @@ Available in `src/helpers/handlebars-helpers.js`:
 Active entry point: `src/scss/main.scss`
 Dashboard styles: `src/css/dashboard.css` (plain CSS, not SCSS)
 
-SCSS component partials (in `app.scss` but not currently active):
-
-- `components/sidebar.scss` — Sidebar styling
-- `components/dashboard.scss` — Dashboard-specific styles
-- `bootstrap-overrides/` — Bootstrap customizations (buttons, cards, forms, navbar)
-- `base/_variables.scss` — Custom variables
+SCSS source: `src/scss/main.scss` only (imports Bootstrap, Bootstrap Icons, Font Awesome)
 
 ### Sidebar Behavior
 
